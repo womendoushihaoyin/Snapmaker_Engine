@@ -40,10 +40,9 @@ jobs:
           at-spi2-core \
           dbus-x11 \
           imagemagick \
-          
+
     - name: Install and configure locales
       run: |
-        sudo apt-get update
         sudo apt-get install -y locales
         sudo locale-gen en_GB.UTF-8
         sudo dpkg-reconfigure locales
@@ -77,30 +76,42 @@ jobs:
 
     - name: Run AppImage
       run: |
-        ./appimage.AppImage /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/3DBenchy.3mf &
-        APPIMAGE_PID=$!
-        echo "AppImage is running with PID $APPIMAGE_PID"
+        ./appimage.AppImage /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/3DBenchy.3mf
+
+        cd /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/
+        ls -a
       env:
-        DISPLAY: ":99"
+       DISPLAY: ":99"
 
-    - name: Capture Screenshots
-      run: |
-        for i in {1..10}; do
-          sleep 5  # Capture a screenshot every 5 seconds
-          import -display :99 -window root /home/runner/work/screenshot_$i.png
-          echo "Screenshot $i captured"
-        done
-    
-    - name: Gracefully stop the AppImage
-      run: |
-        if [ -n "$APPIMAGE_PID" ]; then
-          kill $APPIMAGE_PID
-        else
-          echo "PID not found, cannot kill the AppImage process."
-        fi
 
-    - name: Upload Screenshots
-      uses: actions/upload-artifact@v3
-      with:
-        name: Screenshots
-        path: /home/runner/work/screenshot_*.png
+
+# debug
+#    - name: Run AppImage
+#      run: |
+#        ./appimage.AppImage /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/3DBenchy.3mf &
+#        APPIMAGE_PID=$!
+#        echo "AppImage is running with PID $APPIMAGE_PID"
+#      env:
+#       DISPLAY: ":99"
+
+#    - name: Capture Screenshots
+#      run: |
+#        for i in {1..10}; do
+#          sleep 5  # Capture a screenshot every 5 seconds
+#          import -display :99 -window root /home/runner/work/screenshot_$i.png
+#          echo "Screenshot $i captured"
+#        done
+#    
+#    - name: Gracefully stop the AppImage
+#      run: |
+#       if [ -n "$APPIMAGE_PID" ]; then
+#         kill $APPIMAGE_PID
+#        else
+#          echo "PID not found, cannot kill the AppImage process."
+#        fi
+
+#    - name: Upload Screenshots
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: Screenshots
+#        path: /home/runner/work/screenshot_*.png
