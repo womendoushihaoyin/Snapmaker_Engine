@@ -86,7 +86,7 @@ jobs:
         kill $APPIMAGE_PID  # Gracefully stop the AppImage
 
     - name: Upload Screenshots
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Screenshots
         path: /home/runner/work/screenshot_*.png
