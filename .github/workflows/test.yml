@@ -37,12 +37,18 @@ jobs:
           libegl1 \
           libwebkit2gtk-4.0-37 \
           xvfb \
-          at-spi2-core
+          at-spi2-core \
+          dbus-x11
 
     - name: Start Xvfb
       run: |
         Xvfb :99 -screen 0 1024x768x24 &
         echo "DISPLAY=:99" >> $GITHUB_ENV
+
+    - name: Setup Xauthority
+      run: |
+        touch $HOME/.Xauthority
+        xauth nlist $DISPLAY | xauth -f $HOME/.Xauthority nmerge -
 
     - name: Start AT-SPI Registry
       run: |
