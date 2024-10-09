@@ -83,7 +83,14 @@ jobs:
           import -display :99 -window root /home/runner/work/screenshot_$i.png
           echo "Screenshot $i captured"
         done
-        kill $APPIMAGE_PID  # Gracefully stop the AppImage
+    
+    - name: Gracefully stop the AppImage
+      run: |
+        if [ -n "$APPIMAGE_PID" ]; then
+          kill $APPIMAGE_PID
+        else
+          echo "PID not found, cannot kill the AppImage process."
+        fi
 
     - name: Upload Screenshots
       uses: actions/upload-artifact@v3
