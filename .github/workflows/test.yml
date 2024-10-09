@@ -15,5 +15,9 @@ jobs:
         pwd
         cd /
         ls
+
+        echo depart......................................
+
         cd ~
+        pwd
         ls
