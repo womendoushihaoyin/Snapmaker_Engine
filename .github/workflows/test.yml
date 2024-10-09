@@ -37,7 +37,10 @@ jobs:
           libegl1 \
           libwebkit2gtk-4.0-37
 
-
+    - name: Set DISPLAY
+      run: |
+        export DISPLAY=:0
+        echo $DISPLAY
 
     - name: Download AppImage
       run: |
