@@ -12,16 +12,5 @@ jobs:
 
     - name: Copy Config
       run: |
-        mkdir -p ~/.config/Snapmaker_Orca
-        cp Snapmaker_Orca.conf ~/.config/Snapmaker_Orca/Snapmaker_Orca.conf
-        cp Snapmaker_Orca.conf.bak ~/.config/Snapmaker_Orca/Snapmaker_Orca.conf.bak
-
-        cd ~
+        cd /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/
         ls -a
-        echo ...................................
-        cd .config
-        ls -a
-        echo ...................................
-        cd Snapmaker_Orca
-        ls -a
-        ehco ................................
