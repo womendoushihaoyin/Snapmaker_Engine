@@ -36,13 +36,20 @@ jobs:
           libfuse-dev \
           libegl1 \
           libwebkit2gtk-4.0-37 \
-          xvfb
+          xvfb \
+          at-spi2-core
 
     - name: Start Xvfb
       run: |
         Xvfb :99 -screen 0 1024x768x24 &
         echo "DISPLAY=:99" >> $GITHUB_ENV
 
+    - name: Start AT-SPI Registry
+      run: |
+        echo "Starting AT-SPI Registry"
+        export XDG_SESSION_COOKIE=`xauth list|grep .$DISPLAY|cut -d' ' -f1`
+        dbus-launch --exit-with-session
+        echo "AT-SPI Registry started"
 
     - name: Download AppImage
       run: |
