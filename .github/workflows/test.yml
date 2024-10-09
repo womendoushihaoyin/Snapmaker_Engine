@@ -15,6 +15,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y fuse
 
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libegl1
+
     - name: Download AppImage
       run: |
         wget https://github.com/Snapmaker/OrcaSlicer/releases/download/nightlybuild/Snapmaker_Orca_Engine_Linux_V0.0.1.AppImage -O appimage.AppImage  # 下载AppImage
