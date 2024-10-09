@@ -10,6 +10,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2  # 检出仓库代码
 
+    - name: Install FUSE
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y fuse
+
     - name: Download AppImage
       run: |
         wget https://github.com/Snapmaker/OrcaSlicer/releases/download/nightlybuild/Snapmaker_Orca_Engine_Linux_V0.0.1.AppImage -O appimage.AppImage  # 下载AppImage
