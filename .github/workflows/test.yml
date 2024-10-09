@@ -35,12 +35,14 @@ jobs:
           gstreamer1.0-plugins-ugly \
           libfuse-dev \
           libegl1 \
-          libwebkit2gtk-4.0-37
+          libwebkit2gtk-4.0-37 \
+          xvfb
 
-    - name: Set DISPLAY
+    - name: Start Xvfb
       run: |
-        export DISPLAY=:0
-        echo $DISPLAY
+        Xvfb :99 -screen 0 1024x768x24 &
+        echo "DISPLAY=:99" >> $GITHUB_ENV
+
 
     - name: Download AppImage
       run: |
@@ -56,3 +58,5 @@ jobs:
     - name: Run AppImage
       run: |
         ./appimage.AppImage /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/3DBenchy.3mf
+      env:
+        DISPLAY: ":99"
