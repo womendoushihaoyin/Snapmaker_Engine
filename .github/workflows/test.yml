@@ -1,6 +1,13 @@
 name: Run AppImage
 
-on: [push]  # 触发条件，这里设置为每次push到仓库时执行
+# on: [push]  # 触发条件，这里设置为每次push到仓库时执行
+on:
+  workflow_dispatch:
+    inputs:
+      manual-run:
+        description: '测试远程调用'
+        required: true
+        default: 'true'
 
 jobs:
   build:
