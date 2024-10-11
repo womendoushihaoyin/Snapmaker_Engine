@@ -1,6 +1,5 @@
 name: Run AppImage
 
-# on: [push]  # 触发条件，这里设置为每次push到仓库时执行
 on:
   workflow_dispatch:
     inputs:
@@ -11,11 +10,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 运行在最新的Ubuntu Linux环境中
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2  # 检出仓库代码
+      uses: actions/checkout@v2
+
+    - name: Create Cache Directory
+      run: mkdir -p ./apt-cache/*.deb
 
     - name: Install GUI Dependency
       run: |
@@ -54,27 +56,44 @@ jobs:
         sudo locale-gen en_GB.UTF-8
         sudo dpkg-reconfigure locales
 
+    - name: Setup Xauthority
+      run: |
+        if [ ! -f $HOME/.Xauthority ]; then
+          touch $HOME/.Xauthority
+          xauth nlist $DISPLAY | xauth -f $HOME/.Xauthority nmerge -
+        else
+          echo ".Xauthority 已配置，跳过配置步骤。"
+        fi
+
     - name: Start Xvfb
       run: |
         Xvfb :99 -screen 0 1024x768x24 &
         echo "DISPLAY=:99" >> $GITHUB_ENV
 
-    - name: Setup Xauthority
-      run: |
-        touch $HOME/.Xauthority
-        xauth nlist $DISPLAY | xauth -f $HOME/.Xauthority nmerge -
-
     - name: Start AT-SPI Registry
       run: |
         echo "Starting AT-SPI Registry"
-        export XDG_SESSION_COOKIE=`xauth list|grep .$DISPLAY|cut -d' ' -f1`
+        export XDG_SESSION_COOKIE=$(xauth list | grep .$DISPLAY | cut -d' ' -f1)
         dbus-launch --exit-with-session
         echo "AT-SPI Registry started"
 
+    - name: Cache AppImage
+      uses: actions/cache@v3
+      with:
+        path: appimage.AppImage
+        key: appimage-cache-${{ runner.os }}
+        restore-keys: |
+          appimage-cache-${{ runner.os }}-
+
     - name: Download AppImage
       run: |
-        wget https://github.com/Snapmaker/OrcaSlicer/releases/download/nightlybuild/Snapmaker_Orca_Engine_Linux_V0.0.1.AppImage -O appimage.AppImage  # 下载AppImage
-        chmod 777 appimage.AppImage  # 给AppImage执行权限
+        if [ ! -f appimage.AppImage ]; then
+          echo "下载 AppImage"
+          wget https://github.com/Snapmaker/OrcaSlicer/releases/download/nightlybuild/Snapmaker_Orca_Engine_Linux_V0.0.1.AppImage -O appimage.AppImage
+          chmod 777 appimage.AppImage
+        else
+          echo "AppImage 已下载，跳过下载步骤。"
+        fi
 
     - name: Copy Config
       run: |
@@ -84,12 +103,10 @@ jobs:
     - name: Run AppImage
       run: |
         ./appimage.AppImage /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/3DBenchy.3mf
-
         cd /home/runner/work/Snapmaker_Engine/Snapmaker_Engine/
         ls -a
       env:
-       DISPLAY: ":99"
-
+        DISPLAY: ":99"
 
 
 # debug
